@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "standard"
+  name: "dashboard"
 };
 </script>
 

@@ -8,7 +8,7 @@
         :class="isActive(tag) ? 'active' : ''"
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
-        class="tags-view-item"
+        class="tags-view-item not-select"
         @click.middle.native="closeSelectedTag(tag)"
         @contextmenu.prevent.native="openMenu(tag, $event)"
       >
@@ -25,15 +25,15 @@
       :style="{ left: left + 'px', top: top + 'px' }"
       class="contextmenu"
     >
-      <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
+      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
       <li
         v-if="!(selectedTag.meta && selectedTag.meta.affix)"
         @click="closeSelectedTag(selectedTag)"
       >
-        Close
+        关闭此项
       </li>
-      <li @click="closeOthersTags">Close Others</li>
-      <li @click="closeAllTags(selectedTag)">Close All</li>
+      <li @click="closeOthersTags">关闭其他</li>
+      <li @click="closeAllTags(selectedTag)">关闭全部</li>
     </ul>
   </div>
 </template>

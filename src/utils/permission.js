@@ -3,7 +3,7 @@ import store from "@/store";
 /**
  * @param {Array} value
  * @returns {Boolean}
- * @example see @/views/permission/directive.vue
+ * @example 查看 @/views/permission/directive.vue
  */
 export default function checkPermission(value) {
   if (value && value instanceof Array && value.length > 0) {

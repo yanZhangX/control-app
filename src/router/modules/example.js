@@ -1,5 +1,3 @@
-/** When your routing table is too long, you can split it into small modules **/
-
 import Layout from "@/layout";
 
 const userRouter = {
@@ -7,12 +5,19 @@ const userRouter = {
   component: Layout,
   redirect: "/example/index",
   name: "Table",
+  meta: { title: "用户管理", icon: "home" },
   children: [
     {
       path: "index",
       component: () => import("@/views/example/index"),
       name: "enjoyUser",
-      meta: { title: "用户管理", icon: "user" }
+      meta: { title: "用户", icon: "user" }
+    },
+    {
+      path: "about",
+      name: "about",
+      component: () => import("@/views/about/index"),
+      meta: { title: "about", icon: "dashboard" }
     }
   ]
 };

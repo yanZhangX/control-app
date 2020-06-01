@@ -36,13 +36,13 @@ export default {
       let matched = this.$route.matched.filter(
         item => item.meta && item.meta.title
       );
-      const first = matched[0];
-
-      if (!this.isDashboard(first)) {
-        matched = [{ path: "/dashboard", meta: { title: "首页" } }].concat(
-          matched
-        );
-      }
+      // const first = matched[0];
+      //
+      // if (!this.isDashboard(first)) {
+      //   matched = [{ path: "/dashboard", meta: { title: "系统标准" } }].concat(
+      //     matched
+      //   );
+      // }
 
       this.levelList = matched.filter(
         item => item.meta && item.meta.title && item.meta.breadcrumb !== false
@@ -54,7 +54,7 @@ export default {
         return false;
       }
       return (
-        name.trim().toLocaleLowerCase() === "Dashboard".toLocaleLowerCase()
+        name.trim().toLocaleLowerCase() === "dashboard".toLocaleLowerCase()
       );
     },
     pathCompile(path) {
@@ -65,6 +65,7 @@ export default {
     },
     handleLink(item) {
       const { redirect, path } = item;
+      console.log(path);
       if (redirect) {
         this.$router.push(redirect);
         return;
