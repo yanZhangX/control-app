@@ -1,4 +1,4 @@
-import { asyncRoutes, constantRoutes } from "@/router";
+import { asyncRoutes, constantRoutes } from '@/router'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -6,14 +6,14 @@ import { asyncRoutes, constantRoutes } from "@/router";
  * @param route
  */
 function hasPermission(roles, route) {
-  console.log(roles);
+  console.log(roles)
   if (route.meta && route.meta.roles) {
-    return roles.some(role => {
-      console.log(role);
-      route.meta.roles.includes(role);
-    });
+    return roles.some((role) => {
+      console.log(role)
+      route.meta.roles.includes(role)
+    })
   } else {
-    return true;
+    return true
   }
 }
 
@@ -23,55 +23,55 @@ function hasPermission(roles, route) {
  * @param roles
  */
 export function filterAsyncRoutes(routes, roles) {
-  const res = [];
-  routes.forEach(route => {
-    const tmp = { ...route };
-    console.log(tmp);
+  const res = []
+  routes.forEach((route) => {
+    const tmp = { ...route }
+    console.log(tmp)
     if (hasPermission(roles, tmp)) {
-      console.log(tmp);
+      console.log(tmp)
       if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles);
+        tmp.children = filterAsyncRoutes(tmp.children, roles)
       }
-      res.push(tmp);
+      res.push(tmp)
     }
-  });
-  console.log(res);
-  return res;
+  })
+  console.log(res)
+  return res
 }
 
 const state = {
   routes: [],
   addRoutes: []
-};
+}
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
-    state.addRoutes = routes;
-    state.routes = constantRoutes.concat(routes);
+    state.addRoutes = routes
+    state.routes = constantRoutes.concat(routes)
   }
-};
+}
 
 const actions = {
   generateRoutes({ commit }, roles) {
-    console.log(roles);
-    return new Promise(resolve => {
-      let accessedRoutes;
+    console.log(roles)
+    return new Promise((resolve) => {
+      var accessedRoutes
       // if (roles.includes('admin')) {
       //   console.log(asyncRoutes)
       //   accessedRoutes = asyncRoutes || []
       // } else {
-      console.log(asyncRoutes);
-      accessedRoutes = filterAsyncRoutes(asyncRoutes, roles);
+      console.log(asyncRoutes)
+      accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       // }
-      commit("SET_ROUTES", accessedRoutes);
-      resolve(accessedRoutes);
-    });
+      commit('SET_ROUTES', accessedRoutes)
+      resolve(accessedRoutes)
+    })
   }
-};
+}
 
 export default {
   namespaced: true,
   state,
   mutations,
   actions
-};
+}

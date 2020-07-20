@@ -2,37 +2,16 @@
   <div class="wscn-http404-container">
     <div class="wscn-http404">
       <div class="pic-404">
-        <img
-          class="pic-404__parent"
-          src="@/assets/404_images/404.png"
-          alt="404"
-        />
-        <img
-          class="pic-404__child left"
-          src="@/assets/404_images/404_cloud.png"
-          alt="404"
-        />
-        <img
-          class="pic-404__child mid"
-          src="@/assets/404_images/404_cloud.png"
-          alt="404"
-        />
-        <img
-          class="pic-404__child right"
-          src="@/assets/404_images/404_cloud.png"
-          alt="404"
-        />
+        <img class="pic-404__parent" src="@/assets/404_images/404.png" alt="404" />
+        <img class="pic-404__child left" src="@/assets/404_images/404_cloud.png" alt="404" />
+        <img class="pic-404__child mid" src="@/assets/404_images/404_cloud.png" alt="404" />
+        <img class="pic-404__child right" src="@/assets/404_images/404_cloud.png" alt="404" />
       </div>
       <div class="bullshit">
         <div class="bullshit__oops">哎呀!</div>
         <div class="bullshit__info">
           All rights reserved
-          <a
-            style="color:#20a0ff"
-            href="https://wallstreetcn.com"
-            target="_blank"
-            >wallstreetcn</a
-          >
+          <a style="color:#20a0ff" href="https://wallstreetcn.com" target="_blank">wallstreetcn</a>
         </div>
         <div class="bullshit__headline">{{ message }}</div>
         <div class="bullshit__info">
@@ -46,13 +25,13 @@
 
 <script>
 export default {
-  name: "Page404",
+  name: 'Page404',
   computed: {
     message() {
-      return "站长说你不能进入这个网页...";
+      return '站长说你不能进入这个网页...'
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 module.exports = {
-  title: "公用模板系統",
+  title: '公用模板系統',
 
   /**
    * @type {boolean} true | false
@@ -31,5 +31,5 @@ module.exports = {
    * 默认值仅在生产环境中使用
    * 如果您还想在dev中使用它，可以通过 ['production', 'development']
    */
-  errorLog: "development"
-};
+  errorLog: 'development'
+}

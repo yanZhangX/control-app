@@ -1,12 +1,7 @@
 <template>
   <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <transition name="sidebarLogoFade">
-      <router-link
-        v-if="collapse"
-        key="collapse"
-        class="sidebar-logo-link"
-        to="/"
-      >
+      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo" />
         <h1 v-else class="sidebar-title">{{ title }}</h1>
       </router-link>
@@ -20,7 +15,7 @@
 
 <script>
 export default {
-  name: "SidebarLogo",
+  name: 'SidebarLogo',
   props: {
     collapse: {
       type: Boolean,
@@ -29,11 +24,11 @@ export default {
   },
   data() {
     return {
-      title: "公用模板系統",
-      logo: require("@/assets/logo.png")
-    };
+      title: '公用模板系統',
+      logo: require('@/assets/logo.png')
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

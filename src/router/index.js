@@ -1,11 +1,11 @@
-import Vue from "vue";
-import Router from "vue-router";
-
-Vue.use(Router);
+import Vue from 'vue'
+import Router from 'vue-router'
 
 /* Layout */
-import Layout from "@/layout";
-import user from "./modules/example";
+import Layout from '@/layout'
+import user from './modules/example'
+
+Vue.use(Router)
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -35,50 +35,50 @@ import user from "./modules/example";
  */
 export const constantRoutes = [
   {
-    path: "/redirect",
+    path: '/redirect',
     component: Layout,
     hidden: true,
     children: [
       {
-        path: "/redirect/:path*",
-        component: () => import("@/views/redirect/index")
+        path: '/redirect/:path*',
+        component: () => import('@/views/redirect/index')
       }
     ]
   },
   {
-    path: "/",
+    path: '/',
     component: Layout,
-    redirect: "/dashboard",
+    redirect: '/dashboard',
     children: [
       {
-        path: "dashboard",
-        name: "dashboard",
-        component: () => import("@/views/dashboard/index"),
-        meta: { title: "系统标准", icon: "standard", affix: true }
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: '系统标准', icon: 'standard', affix: true }
       }
     ]
   },
   {
-    path: "/404",
-    component: () => import("@/views/404"),
+    path: '/404',
+    component: () => import('@/views/404'),
     hidden: true
   },
   user,
   // 404页面必须放在末尾！！！
-  { path: "*", redirect: "/404", hidden: true }
-];
+  { path: '*', redirect: '/404', hidden: true }
+]
 const createRouter = () =>
   new Router({
     scrollBehavior: () => ({ y: 0 }),
     routes: constantRoutes
-  });
+  })
 
-const router = createRouter();
+const router = createRouter()
 
 // 详情查看此处: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter();
-  router.matcher = newRouter.matcher; // 重置路由
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // 重置路由
 }
 
-export default router;
+export default router
