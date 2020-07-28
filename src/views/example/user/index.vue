@@ -1,5 +1,7 @@
 <template>
-  <div>啊啊啊</div>
+  <div>
+    <h1>This is an user page</h1>
+  </div>
 </template>
 
 <script>

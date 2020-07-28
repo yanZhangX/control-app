@@ -9,14 +9,14 @@ const userRouter = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/example/index'),
+      component: () => import('@/views/example/user/index'),
       name: 'enjoyUser',
       meta: { title: '用户', icon: 'user' }
     },
     {
       path: 'about',
       name: 'about',
-      component: () => import('@/views/about/index'),
+      component: () => import('@/views/example/about/index'),
       meta: { title: 'about', icon: 'dashboard' }
     }
   ]

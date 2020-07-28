@@ -35,6 +35,11 @@ Vue.use(Router)
  */
 export const constantRoutes = [
   {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,
@@ -54,7 +59,7 @@ export const constantRoutes = [
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '系统标准', icon: 'standard', affix: true }
+        meta: { title: '首页', icon: 'standard', affix: true }
       }
     ]
   },
