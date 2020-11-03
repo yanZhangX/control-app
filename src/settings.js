@@ -1,5 +1,13 @@
+/*
+ * @Author: xiangty
+ * @Date: 2020-11-03 22:27:01
+ * @LastEditTime: 2020-11-03 22:31:57
+ * @LastEditors: xiangty
+ * @Description: In User Settings Edit
+ * @FilePath: \control-app\src\settings.js
+ */
 module.exports = {
-  title: '公用模板系統',
+  title: '控件app',
 
   /**
    * @type {boolean} true | false

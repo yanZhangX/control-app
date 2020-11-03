@@ -8,9 +8,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
-
-const host = process.env.HOST || process.env.npm_config_host || IP
+const name = defaultSettings.title || 'control app' // page title
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 
 module.exports = {
@@ -21,7 +19,6 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     hot: true,
-    public: host + ':' + port,
     port: port,
     open: true,
     overlay: {
@@ -113,11 +110,6 @@ module.exports = {
             test: /[\\/]node_modules[\\/]/,
             priority: 10,
             chunks: 'initial'
-          },
-          elementUI: {
-            name: 'chunk-elementUI',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]_?element-ui(.*)/
           },
           commons: {
             name: 'chunk-commons',

@@ -1,12 +1,16 @@
+/*
+ * @Author: xiangty
+ * @Date: 2020-11-03 22:27:01
+ * @LastEditTime: 2020-11-03 23:12:56
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \control-app\src\main.js
+ */
 import Vue from 'vue'
-
-import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // CSS重置的替代方法
 
-import Element from 'element-ui'
-import './styles/element-variables.scss'
-import './styles/response.scss'
+// import Element from 'element-ui'
 
 import '@/styles/index.scss' // 全局 css
 
@@ -18,9 +22,9 @@ import './icons' // icon
 // import "./permission"; // 权限控制
 import * as filters from './filters'
 
-Vue.use(Element, {
-  size: Cookies.get('size') || 'medium' // 设置 element-ui 默认大小
-})
+// Vue.use(Element, {
+//   size: Cookies.get('size') || 'medium' // 设置 element-ui 默认大小
+// })
 Object.keys(filters).forEach((key) => {
   Vue.filter(key, filters[key])
 })
