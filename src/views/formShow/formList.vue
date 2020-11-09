@@ -8,19 +8,15 @@
 -->
 <template>
   <div class="form-list" formList>
-      <!-- <template v-for="(item, index) in "></template> -->
-      <div class="form-item">
-          <p></p>
-      </div>
+    <!-- <template v-for="(item, index) in "></template> -->
+    <div class="form-item">
+      <p></p>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-
-}
+export default {}
 </script>
 
-<style>
-
-</style>
+<style></style>
