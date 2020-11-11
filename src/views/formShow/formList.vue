@@ -16,7 +16,26 @@
 </template>
 
 <script>
-export default {}
+import { listUserFormData } from '@/api/form.js'
+export default {
+  data() {
+    return {
+      query: {
+        currentPage: 1,
+        pageSize: 10
+      }
+    }
+  },
+  methods: {
+    queryListUserFormData() {
+      const { query } = this
+      listUserFormData(query).then((res) => {})
+    }
+  },
+  created() {
+    this.queryListUserFormData()
+  }
+}
 </script>
 
 <style></style>
