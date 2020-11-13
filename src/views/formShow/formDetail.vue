@@ -1,7 +1,7 @@
 <!--
  * @Author: xiangty
  * @Date: 2020-11-03 23:02:11
- * @LastEditTime: 2020-11-11 23:03:59
+ * @LastEditTime: 2020-11-12 22:56:21
  * @LastEditors: Please set LastEditors
  * @Description: 表单展示页
  * @FilePath: \control-app\src\views\formShow\index.vue
@@ -12,6 +12,9 @@
     <van-form @submit="onSubmit">
       <van-field v-model="username" name="用户名" label="用户名" placeholder="用户名" />
       <van-field v-model="password" type="password" name="密码" label="密码" placeholder="密码" />
+      <van-dropdown-menu>
+        <van-dropdown-item v-model="value1" :options="option1" />
+      </van-dropdown-menu>
       <div style="margin: 16px;">
         <van-button round block type="info" native-type="submit">
           提交
@@ -23,20 +26,28 @@
 
 <script>
 import { NavBar, Form, Button, Field } from 'vant'
-import { listUserFormDetail } from '@/api/form'
+import { listUserFormDetail, DropdownMenu, DropdownItem } from '@/api/form'
 export default {
   name: 'formDetail',
   components: {
     [NavBar.name]: NavBar,
     [Form.name]: Form,
     [Button.name]: Button,
-    [Field.name]: Field
+    [Field.name]: Field,
+    [DropdownMenu.name]: DropdownMenu,
+    [DropdownItem.name]: DropdownItem
   },
   data() {
     return {
       username: '',
       password: '',
-      templateId: null
+      templateId: null,
+      value1: 0,
+      option1: [
+        { text: '全部商品', value: 0 },
+        { text: '新款商品', value: 1 },
+        { text: '活动商品', value: 2 }
+      ]
     }
   },
   created() {

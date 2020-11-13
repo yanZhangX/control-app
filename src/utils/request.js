@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import { MessageBox, Message } from 'element-ui'
+import { Toast } from 'vant'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
@@ -46,23 +46,11 @@ service.interceptors.response.use(
     const res = response.data
     // 如果自定义代码不是200，则判断为错误。
     if (res.code !== 200) {
-      // Message({
-      //   message: res.msg || 'Error',
-      //   type: 'error',
-      //   duration: 5 * 1000
-      // })
-      // 50008: 非法令牌; 50012: 其他登录的客户端; 50014: 令牌已过期;
       if (res.code === 500) {
-        // to re-login
-        // MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-        //   confirmButtonText: 'Re-Login',
-        //   cancelButtonText: 'Cancel',
-        //   type: 'warning'
-        // }).then(() => {
-        //   store.dispatch('user/resetToken').then(() => {
-        //     location.reload()
-        //   })
-        // })
+        Toast({
+          type: 'fail',
+          message: '服务端错误'
+        })
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
@@ -71,11 +59,10 @@ service.interceptors.response.use(
   },
   (error) => {
     console.log('err' + error) // for debug
-    // Message({
-    //   message: error.message,
-    //   type: 'error',
-    //   duration: 5 * 1000
-    // })
+    Toast({
+      type: 'fail',
+      message: error.message
+    })
     return Promise.reject(error)
   }
 )
