@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-03 22:27:01
- * @LastEditTime: 2020-11-04 23:42:56
+ * @LastEditTime: 2020-11-15 10:04:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\router\index.js
@@ -16,22 +16,23 @@ Vue.use(Router)
 export const constantRoutes = [
   {
     path: '/',
-    redirect: '/formList'
+    redirect: '/formShow/0'
   },
   {
-    path: '/formList',
-    component: () => import('@/views/formShow/formList.vue'),
-    hidden: true
+    path: '/formShow/:mode',
+    component: () => import('@/views/formShow/index.vue')
+  },
+  {
+    path: '/formInput',
+    component: () => import('@/views/formShow/formInput.vue')
   },
   {
     path: '/formDetail',
-    component: () => import('@/views/formShow/formDetail.vue'),
-    hidden: true
+    component: () => import('@/views/formShow/formDetail.vue')
   },
   {
     path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
+    component: () => import('@/views/404')
   },
   // 404页面必须放在末尾！！！
   { path: '*', redirect: '/404', hidden: true }

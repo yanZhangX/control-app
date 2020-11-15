@@ -338,3 +338,17 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+/**
+ * 拆分数据
+ * @param {Array} arr
+ * @param {string} attr
+ */
+export function splitArrObj(arr = [], attr) {
+  const result = arr.map((v) => {
+    if (typeof v[attr] === 'string') {
+      return JSON.parse(v[attr])
+    }
+    return v[attr]
+  })
+  return result
+}
