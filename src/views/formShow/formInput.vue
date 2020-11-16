@@ -1,7 +1,7 @@
 <!--
  * @Author: xiangty
  * @Date: 2020-11-03 23:02:11
- * @LastEditTime: 2020-11-15 23:09:45
+ * @LastEditTime: 2020-11-16 23:39:32
  * @LastEditors: Please set LastEditors
  * @Description: 表单展示页
  * @FilePath: \control-app\src\views\formInput\index.vue
@@ -133,7 +133,12 @@ export default {
       getUserFromData({ templateId, hid: templateHid }).then((res) => {
         const { templateName, detailList } = res.data
         this.templateName = templateName
-        this.detailList = splitArrObj(detailList, 'data')
+        this.detailList = splitArrObj(detailList, 'data').map((item) => {
+          if ((item.tag === 'fileUpload' || item.tag === 'pic') && typeof item.content === 'string') {
+            item.content = []
+          }
+          return item
+        })
       })
     },
     onDateConfirm(date, index) {
@@ -152,7 +157,10 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       fileUpload(formData).then((res) => {
-        detailList[index].content = res.data
+        if (!detailList[index].content) {
+          detailList[index].content = []
+        }
+        detailList[index].content.push(res.data)
       })
     },
     afterFileRead({ file }, index) {
@@ -160,7 +168,10 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       fileUpload(formData).then((res) => {
-        detailList[index].content = res.data
+        if (!detailList[index].content) {
+          detailList[index].content = []
+        }
+        detailList[index].content.push(res.data)
       })
     },
     onAreaConfirm(values, index) {

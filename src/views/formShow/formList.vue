@@ -1,14 +1,14 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-04 23:42:03
- * @LastEditTime: 2020-11-15 21:55:28
+ * @LastEditTime: 2020-11-16 22:48:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\views\formShow\formList.vue
 -->
 <template>
   <div class="form-list" formList>
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="queryListUserFormData">
+    <van-list v-if="formList.length > 0" v-model="loading" :finished="finished" finished-text="没有更多了" @load="queryListUserFormData">
       <template v-for="(item, index) in formList">
         <van-cell value="详情" is-link @click.native="toDetail(item)" :key="index">
           <!-- 使用 title 插槽来自定义标题 -->
@@ -74,6 +74,8 @@ export default {
         this.loading = false
         if (this.formList.length === total) {
           this.finished = true
+        } else {
+          query.currentPage++
         }
       })
     }
