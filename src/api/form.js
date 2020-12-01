@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-11 22:30:07
- * @LastEditTime: 2020-11-15 22:57:05
+ * @LastEditTime: 2020-11-29 17:30:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\api\form.js
@@ -62,5 +62,13 @@ export function updateUserFromData(data) {
     url: '/api/v1/form/updateUserFromData',
     method: 'post',
     data
+  })
+}
+// 修改用户填写from数据
+export function getJsapiSignature(params) {
+  return request({
+    url: '/api/v1/wx/createJsapiSignature',
+    method: 'get',
+    params
   })
 }

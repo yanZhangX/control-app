@@ -5,7 +5,11 @@
 </template>
 
 <script>
+import { wxConfig } from '@/utils/wxInit.js'
 export default {
-  name: 'App'
+  name: 'App',
+  created() {
+    wxConfig()
+  }
 }
 </script>

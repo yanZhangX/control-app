@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-03 22:27:01
- * @LastEditTime: 2020-11-15 10:04:23
+ * @LastEditTime: 2020-11-22 17:31:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\router\index.js
@@ -9,18 +9,28 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import user from './modules/example'
-
 Vue.use(Router)
 
 export const constantRoutes = [
   {
     path: '/',
-    redirect: '/formShow/0'
+    redirect: '/formShow/formList'
   },
   {
-    path: '/formShow/:mode',
-    component: () => import('@/views/formShow/index.vue')
+    path: '/formShow',
+    component: () => import('@/views/formShow/index.vue'),
+    children: [
+      {
+        path: 'formList',
+        name: 'formList',
+        component: () => import('@/views/formShow/formList.vue')
+      },
+      {
+        path: 'formAlready',
+        name: 'formAlready',
+        component: () => import('@/views/formShow/formAlready.vue')
+      }
+    ]
   },
   {
     path: '/formInput',

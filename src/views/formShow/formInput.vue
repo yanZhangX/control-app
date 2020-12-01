@@ -1,7 +1,7 @@
 <!--
  * @Author: xiangty
  * @Date: 2020-11-03 23:02:11
- * @LastEditTime: 2020-11-16 23:39:32
+ * @LastEditTime: 2020-11-29 23:55:47
  * @LastEditors: Please set LastEditors
  * @Description: 表单展示页
  * @FilePath: \control-app\src\views\formInput\index.vue
@@ -58,6 +58,12 @@
         </van-field>
         <van-field v-if="item.tag === 'tooltips'" v-model="item.content" type="text" :label="item.title" :placeholder="item.tips" />
         <van-field v-if="item.tag === 'address'" readonly clickable :value="item.content" :label="item.title" :placeholder="item.tips" @click="showArea = true" />
+        <van-cell v-if="item.tag === 'location'" :title="item.title" :label="item.content" />
+        <van-field v-if="item.tag === 'data-select'" :label="item.title" class="custom-select">
+          <template #input>
+            <multiselect v-model="item.content" :options="item.options" :placeholder="item.tips" :searchable="false" :show-labels="false"> </multiselect>
+          </template>
+        </van-field>
         <van-popup v-model="showArea" position="bottom">
           <van-area :area-list="areaList" @confirm="(e) => onAreaConfirm(e, index)" @cancel="showArea = false" />
         </van-popup>
@@ -68,15 +74,19 @@
         </van-button>
       </div>
     </van-form>
+    <div id="container"></div>
   </div>
 </template>
 
 <script>
-import { NavBar, Form, Button, Field, Stepper, RadioGroup, Radio, CheckboxGroup, Checkbox, Calendar, Uploader, Popup, Area, Toast } from 'vant'
+import { NavBar, Form, Button, Field, Cell, Stepper, RadioGroup, Radio, CheckboxGroup, Checkbox, Calendar, Uploader, Popup, Area, Toast } from 'vant'
 import Multiselect from 'vue-multiselect'
 import { splitArrObj } from '@/utils/index.js'
 import { fileUpload, saveForm, getUserFromData, getTemplate, updateUserFromData } from '@/api/form'
 import areaList from '@/assets/json/area.js'
+import { getLocation } from '@/utils/wxInit.js'
+import aMap from '@/utils/aMap.js'
+let geocoder
 export default {
   name: 'formDetail',
   components: {
@@ -84,6 +94,7 @@ export default {
     [Form.name]: Form,
     [Button.name]: Button,
     [Field.name]: Field,
+    [Cell.name]: Cell,
     [Stepper.name]: Stepper,
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
@@ -97,6 +108,7 @@ export default {
   },
   data() {
     return {
+      amap: undefined,
       fromPath: '', // 来源路由
       detailList: [],
       templateName: '表单控件',
@@ -120,12 +132,44 @@ export default {
     }
   },
   methods: {
+    queryAddress(lnglat) {
+      aMap.init().then((AMap) => {
+        this.amap = new window.AMap.Map('container', {
+          resizeEnable: true
+        })
+        AMap.plugin('AMap.Geocoder', () => {
+          geocoder = new AMap.Geocoder({
+            city: '010', // 城市设为北京，默认：“全国”
+            radius: 1000 // 范围，默认：500
+          })
+          geocoder.getAddress(lnglat, (status, result) => {
+            if (status === 'complete' && result.info === 'OK') {
+              const { formattedAddress } = result.regeocode
+              // result为对应的地理位置详细信息
+              console.log(formattedAddress)
+              this.setAddress(formattedAddress)
+            } else {
+              Toast({
+                message: '根据经纬度查询地址失败'
+              })
+            }
+          })
+        })
+      })
+    },
     queryTemplate() {
       const { templateId } = this
       getTemplate({ templateId }).then((res) => {
         const { templateName, templateDetailList } = res.data
         this.templateName = templateName
         this.detailList = templateDetailList
+        getLocation()
+          .then((res) => {
+            this.queryAddress(res)
+          })
+          .catch(() => {
+            this.setAddress('定位失败')
+          })
       })
     },
     queryUserFromData() {
@@ -139,6 +183,18 @@ export default {
           }
           return item
         })
+      })
+    },
+    /**
+     * @description 赋值地址
+     */
+    setAddress(addr) {
+      this.detailList = this.detailList.map((item) => {
+        console.log(item.tag === 'location')
+        if (item.tag === 'location') {
+          item.content = addr
+        }
+        return item
       })
     },
     onDateConfirm(date, index) {
@@ -204,7 +260,7 @@ export default {
       if (fromPath === '/formDetail') {
         saveForm(params).then((res) => {
           if (res.code === 200) {
-            this.$router.push({ path: `/formShow/${1}` })
+            this.$router.push({ path: `/formShow/formAlready` })
           } else {
             Toast.loading({
               type: 'fail',
@@ -216,7 +272,7 @@ export default {
         params.hId = templateHid
         updateUserFromData(params).then((res) => {
           if (res.code === 200) {
-            this.$router.push({ path: `/formShow/${1}` })
+            this.$router.push({ path: `/formShow/formAlready` })
           } else {
             Toast.loading({
               type: 'fail',

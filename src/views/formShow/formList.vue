@@ -1,37 +1,20 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-04 23:42:03
- * @LastEditTime: 2020-11-16 22:48:52
+ * @LastEditTime: 2020-11-29 23:58:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\views\formShow\formList.vue
 -->
 <template>
   <div class="form-list" formList>
-    <van-list v-if="formList.length > 0" v-model="loading" :finished="finished" finished-text="没有更多了" @load="queryListUserFormData">
-      <template v-for="(item, index) in formList">
-        <van-cell value="详情" is-link @click.native="toDetail(item)" :key="index">
-          <!-- 使用 title 插槽来自定义标题 -->
-          <template #title>
-            <van-row>
-              <van-col span="15">模板名称</van-col>
-              <van-col span="8" offset="1">{{ item.templateName }}</van-col>
-            </van-row>
-            <van-row>
-              <van-col span="15">创建人</van-col>
-              <van-col span="8" offset="1">{{ item.createR }}</van-col>
-            </van-row>
-            <van-row>
-              <van-col span="15">创建时间</van-col>
-              <van-col span="8" offset="1">{{ item.createTime }}</van-col>
-            </van-row>
-            <van-row>
-              <van-col span="15">是否允许修改</van-col>
-              <van-col span="8" offset="1">{{ item.moidfy === 0 ? '否' : '是' }}</van-col>
-            </van-row>
-          </template>
-        </van-cell>
-      </template>
+    <van-nav-bar title="模板列表" fixed />
+    <van-list class="main-body" v-if="formList.length > 0" v-model="loading" :finished="finished" finished-text="没有更多了" @load="queryListUserFormData">
+      <van-grid :column-num="3">
+        <template v-for="(item, index) in formList">
+          <van-grid-item :key="index" :icon="item.iconUrl ? item.iconUrl : 'photo-o'" :text="item.templateName" @click.native="toDetail(item)" />
+        </template>
+      </van-grid>
     </van-list>
     <van-empty v-if="formList.length === 0" description="暂无数据" />
   </div>
@@ -39,15 +22,19 @@
 
 <script>
 import { getTemplateList } from '@/api/form.js'
-import { Cell, CellGroup, Col, Row, Tag, Empty, List } from 'vant'
+import { NavBar, Cell, CellGroup, Col, Row, Tag, Empty, List, Grid, GridItem } from 'vant'
 export default {
+  name: 'formList',
   components: {
+    [NavBar.name]: NavBar,
     [CellGroup.name]: CellGroup,
     [Cell.name]: Cell,
     [Col.name]: Col,
     [Row.name]: Row,
     [Tag.name]: Tag,
     [Empty.name]: Empty,
+    [Grid.name]: Grid,
+    [GridItem.name]: GridItem,
     [List.name]: List
   },
   data() {

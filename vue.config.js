@@ -35,16 +35,16 @@ module.exports = {
         '@': resolve('src')
       }
     },
-    plugins: [
-      new NyanProgressPlugin({
-        debounceInterval: 60,
-        nyanCatSays(progress) {
-          if (progress === 1) {
-            return '加油，奥利给！'
-          }
-        }
-      })
-    ]
+    // plugins: [
+    //   new NyanProgressPlugin({
+    //     debounceInterval: 60,
+    //     nyanCatSays(progress) {
+    //       if (progress === 1) {
+    //         return '加油，奥利给！'
+    //       }
+    //     }
+    //   })
+    // ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test

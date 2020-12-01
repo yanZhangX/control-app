@@ -1,3 +1,11 @@
+/*
+ * @Author: xiangty
+ * @Date: 2020-11-03 22:27:02
+ * @LastEditTime: 2020-11-30 00:03:31
+ * @LastEditors: Please set LastEditors
+ * @Description: http request
+ * @FilePath: \control-app\src\utils\request.js
+ */
 import axios from 'axios'
 import { Toast } from 'vant'
 import store from '@/store'
@@ -52,7 +60,7 @@ service.interceptors.response.use(
           message: '服务端错误'
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(response.data.code || 'Error')
     } else {
       return res
     }
