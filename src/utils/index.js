@@ -352,3 +352,14 @@ export function splitArrObj(arr = [], attr) {
   })
   return result
 }
+/**
+ * 上传附件转base64
+ * @param {File} file 文件流
+ */
+export const fileByBase64 = (file, callback) => {
+  var reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = function(e) {
+    callback(e.target.result)
+  }
+}

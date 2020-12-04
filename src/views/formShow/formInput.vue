@@ -1,7 +1,7 @@
 <!--
  * @Author: xiangty
  * @Date: 2020-11-03 23:02:11
- * @LastEditTime: 2020-11-29 23:55:47
+ * @LastEditTime: 2020-12-05 01:19:41
  * @LastEditors: Please set LastEditors
  * @Description: 表单展示页
  * @FilePath: \control-app\src\views\formInput\index.vue
@@ -23,7 +23,46 @@
             <multiselect v-model="item.content" :options="item.options" :placeholder="item.tips" :searchable="false" :show-labels="false"> </multiselect>
           </template>
         </van-field>
-        <van-field v-if="item.tag === 'radio'" :label="item.title" class="custom-input">
+        <van-field
+          class="custom-input"
+          v-if="item.tag === 'radio'"
+          readonly
+          clickable
+          name="picker"
+          :value="item.content"
+          :label="item.title"
+          :placeholder="item.tips"
+          @click="showRadioPicker = true"
+        />
+        <van-popup v-if="item.tag === 'radio'" v-model="showRadioPicker" position="bottom">
+          <van-picker show-toolbar :columns="item.options ? item.options : ['aaa']" @confirm="(e) => onRadioConfirm(e, index)" @cancel="showRadioPicker = false" />
+        </van-popup>
+        <van-field
+          class="custom-input"
+          v-if="item.tag === 'radio-group'"
+          readonly
+          clickable
+          name="picker"
+          :label="item.title"
+          :value="radioGroupValue(item.content)"
+          :placeholder="item.tips"
+          @click="showGroupPicker = true"
+        />
+        <van-popup v-if="item.tag === 'radio-group'" closeable close-icon="close" :style="{ height: '30%' }" v-model="showGroupPicker" get-container="#RadioGroup" position="bottom">
+          <div class="group-container">
+            <div class="group-header"></div>
+            <van-checkbox-group v-model="item.content">
+              <van-cell-group>
+                <van-cell v-for="(cell, cindex) in item.options" clickable :key="cindex" :title="cell" @click="toggleRadioGroup(cindex)">
+                  <template #right-icon>
+                    <van-checkbox shape="square" :name="cell" ref="checkboxes" />
+                  </template>
+                </van-cell>
+              </van-cell-group>
+            </van-checkbox-group>
+          </div>
+        </van-popup>
+        <!-- <van-field v-if="item.tag === 'radio'" :label="item.title" class="custom-input">
           <template #input>
             <van-radio-group v-model="item.content" direction="horizontal">
               <template v-for="(val, key) in item.options">
@@ -31,8 +70,8 @@
               </template>
             </van-radio-group>
           </template>
-        </van-field>
-        <van-field v-if="item.tag === 'radio-group'" :label="item.title" class="custom-input">
+        </van-field> -->
+        <!-- <van-field v-if="item.tag === 'radio-group'" :label="item.title" class="custom-input">
           <template #input>
             <van-checkbox-group v-model="item.contnet" direction="horizontal">
               <van-checkbox name="a">复选框 a</van-checkbox>
@@ -41,19 +80,26 @@
               </template>
             </van-checkbox-group>
           </template>
-        </van-field>
+        </van-field> -->
         <van-field v-if="item.tag === 'date'" readonly clickable name="calendar" :value="item.content" label="日历" :placeholder="item.tips" @click="showCalendar = true" />
-        <van-calendar v-model="showCalendar" @confirm="(e) => onDateConfirm(e, index)" />
+        <van-calendar v-if="item.tag === 'date'" v-model="showCalendar" @confirm="(e) => onDateConfirm(e, index)" />
         <van-field v-if="item.tag === 'range-date'" readonly clickable name="calendar" :value="item.content" label="日历" :placeholder="item.tips" @click="showRangeCalendar = true" />
-        <van-calendar v-model="showRangeCalendar" @confirm="(e) => onRangeConfirm(e, index)" />
+        <van-calendar v-if="item.tag === 'range-date'" v-model="showRangeCalendar" @confirm="(e) => onRangeConfirm(e, index)" />
         <van-field v-if="item.tag === 'pic'" name="uploader" :label="item.title">
           <template #input>
-            <van-uploader v-model="item.content" :after-read="(e) => afterRead(e, index)" />
+            <van-uploader
+              multiple
+              v-model="item.content"
+              :after-read="(e, detail) => afterRead(e, detail, index)"
+              :preview-full-image="false"
+              accept=".png,.jpg,.gif,.jpeg"
+              @click-preview="(e, detail) => previewImg(e, detail, index)"
+            />
           </template>
         </van-field>
         <van-field v-if="item.tag === 'file'" name="uploader" :label="item.title">
           <template #input>
-            <van-uploader v-model="item.content" :after-read="(e) => afterFileRead(e, index)" accept=".doc,.pdf,xls" />
+            <van-uploader v-model="item.content" :after-read="(e, detail) => afterFileRead(e, detail, index)" accept=".doc,.pdf,xls" />
           </template>
         </van-field>
         <van-field v-if="item.tag === 'tooltips'" v-model="item.content" type="text" :label="item.title" :placeholder="item.tips" />
@@ -64,7 +110,7 @@
             <multiselect v-model="item.content" :options="item.options" :placeholder="item.tips" :searchable="false" :show-labels="false"> </multiselect>
           </template>
         </van-field>
-        <van-popup v-model="showArea" position="bottom">
+        <van-popup v-if="item.tag === 'address'" v-model="showArea" position="bottom">
           <van-area :area-list="areaList" @confirm="(e) => onAreaConfirm(e, index)" @cancel="showArea = false" />
         </van-popup>
       </div>
@@ -79,7 +125,7 @@
 </template>
 
 <script>
-import { NavBar, Form, Button, Field, Cell, Stepper, RadioGroup, Radio, CheckboxGroup, Checkbox, Calendar, Uploader, Popup, Area, Toast } from 'vant'
+import { NavBar, Form, Button, Field, CellGroup, Cell, Stepper, RadioGroup, Radio, CheckboxGroup, Checkbox, Calendar, Uploader, Popup, Area, Toast, Picker, ImagePreview } from 'vant'
 import Multiselect from 'vue-multiselect'
 import { splitArrObj } from '@/utils/index.js'
 import { fileUpload, saveForm, getUserFromData, getTemplate, updateUserFromData } from '@/api/form'
@@ -94,6 +140,7 @@ export default {
     [Form.name]: Form,
     [Button.name]: Button,
     [Field.name]: Field,
+    [CellGroup.name]: CellGroup,
     [Cell.name]: Cell,
     [Stepper.name]: Stepper,
     [RadioGroup.name]: RadioGroup,
@@ -104,6 +151,7 @@ export default {
     [Uploader.name]: Uploader,
     [Popup.name]: Popup,
     [Area.name]: Area,
+    [Picker.name]: Picker,
     Multiselect
   },
   data() {
@@ -114,10 +162,21 @@ export default {
       templateName: '表单控件',
       templateId: null,
       templateHid: null,
+      showRadioPicker: false,
+      showGroupPicker: false,
       showCalendar: false,
       showRangeCalendar: false,
       showArea: false,
       areaList // 数据格式见 Area 组件文档
+    }
+  },
+  computed: {
+    radioGroupValue() {
+      return function(value) {
+        if (value) {
+          return value.join(',')
+        }
+      }
     }
   },
   created() {
@@ -197,6 +256,15 @@ export default {
         return item
       })
     },
+    onRadioConfirm(value, index) {
+      console.log(index)
+      const { detailList } = this
+      detailList[index].content = value
+      this.showRadioPicker = false
+    },
+    toggleRadioGroup(index) {
+      this.$refs.checkboxes[index].toggle()
+    },
     onDateConfirm(date, index) {
       const { detailList } = this
       detailList[index].content = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
@@ -208,26 +276,37 @@ export default {
       this.showRangeCalendar = false
     },
     // 此时可以自行将文件上传至服务器
-    afterRead({ file }, index) {
+    afterRead({ file }, { index: key }, index) {
       const { detailList } = this
       const formData = new FormData()
       formData.append('file', file)
       fileUpload(formData).then((res) => {
-        if (!detailList[index].content) {
-          detailList[index].content = []
+        detailList[index].content[key] = {
+          url: res.data,
+          name: file.name
         }
-        detailList[index].content.push(res.data)
       })
     },
-    afterFileRead({ file }, index) {
+    previewImg({ file }, { index: key }, index) {
+      const { detailList } = this
+      console.log('aa', index)
+      const images = detailList[index].content.map((e) => {
+        return e.url
+      })
+      ImagePreview({
+        images,
+        startPosition: key
+      })
+    },
+    afterFileRead({ file }, { index: key }, index) {
       const { detailList } = this
       const formData = new FormData()
       formData.append('file', file)
       fileUpload(formData).then((res) => {
-        if (!detailList[index].content) {
-          detailList[index].content = []
+        detailList[index].content[key] = {
+          url: res.data,
+          name: file.name
         }
-        detailList[index].content.push(res.data)
       })
     },
     onAreaConfirm(values, index) {
@@ -300,6 +379,22 @@ export default {
   }
   .multiselect__option--selected.multiselect__option--highlight {
     background-color: #1989fa;
+  }
+  .group-header {
+    height: 44px;
+  }
+  .group-container {
+    position: relative;
+    height: 100%;
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .van-checkbox-group {
+      height: calc(100% - 44px);
+      overflow-y: scroll;
+    }
   }
 }
 </style>
