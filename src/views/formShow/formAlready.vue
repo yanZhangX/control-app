@@ -1,7 +1,7 @@
 <!--
  * @Author: xianvgty
  * @Date: 2020-11-14 11:48:22
- * @LastEditTime: 2020-11-30 00:07:54
+ * @LastEditTime: 2020-12-07 00:35:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\views\formShow\formAready.vue
@@ -9,35 +9,55 @@
 <template>
   <div class="form-already">
     <van-nav-bar title="已填写列表" fixed />
-    <van-skeleton :row="20" :loading="loading" />
-    <van-list class="main-body" v-if="formList.length > 0" v-model="loading" :finished="finished" finished-text="没有更多了" @load="queryListUserFormData">
-      <template v-for="(item, index) in formList">
-        <van-cell :value="item.createTime" :title="item.templateName" is-link @click.native="toDetail(item.templateId, item.hid)" :key="index">
-          <!-- 使用 title 插槽来自定义标题 -->
-          <template #label>
-            <van-row>
-              <van-col span="10">创建人：</van-col>
-              <van-col span="14">{{ item.submitR }}</van-col>
-            </van-row>
-            <!-- <van-row>
+    <div class="main-body">
+      <van-search v-model="searchValue" show-action label="标题" placeholder="请输入搜索关键词" @search="onSearchAlready">
+        <template #action>
+          <div @click="onSearchAlready">搜索</div>
+        </template>
+      </van-search>
+      <van-dropdown-menu>
+        <van-dropdown-item v-model="query.examine" :options="examines" @change="onChangeExamine" />
+        <van-dropdown-item :title="query.createTime ? query.createTime : '请选择日期'" ref="submitTime">
+          <van-calendar :min-date="minDate" :max-date="maxDate" :show-title="false" :poppable="false" :style="{ height: '400px' }" @confirm="onSubmitTimeConfirm" />
+        </van-dropdown-item>
+      </van-dropdown-menu>
+      <van-skeleton :row="20" :loading="loading" />
+      <van-list v-if="formList.length > 0" v-model="loading" :finished="finished" finished-text="没有更多了" @load="queryListUserFormData">
+        <template v-for="(item, index) in formList">
+          <van-cell :value="item.createTime" is-link @click.native="toDetail(item.templateId, item.hid)" :key="index">
+            <template #title>
+              <div class="title-wrap">
+                <span class="custom-title">{{ item.templateName }}</span>
+                <van-tag :type="item.examine === '已审核' ? 'success' : item.examine === '已驳回' ? 'danger' : 'warning'" plain>{{ item.examine }}</van-tag>
+              </div>
+            </template>
+            <!-- 使用 title 插槽来自定义标题 -->
+            <template #label>
+              <van-row>
+                <van-col span="10">创建人：</van-col>
+                <van-col span="14">{{ item.submitR }}</van-col>
+              </van-row>
+              <!-- <van-row>
               <van-col span="10">创建时间：</van-col>
               <van-col span="14">{{ item.createTime }}</van-col>
             </van-row> -->
-            <van-row>
-              <van-col span="14">是否允许修改：</van-col>
-              <van-col span="8">{{ item.moidfy === 0 ? '否' : '是' }}</van-col>
-            </van-row>
-          </template>
-        </van-cell>
-      </template>
-    </van-list>
-    <van-empty v-if="formList.length === 0 && pageTotal === 0" description="暂无数据" />
+              <van-row>
+                <van-col span="14">是否允许修改：</van-col>
+                <van-col span="8">{{ item.moidfy === 0 ? '否' : '是' }}</van-col>
+              </van-row>
+            </template>
+          </van-cell>
+        </template>
+      </van-list>
+      <van-empty v-if="formList.length === 0 && pageTotal === 0" description="暂无数据" />
+    </div>
   </div>
 </template>
 
 <script>
 import { formListAready } from '@/api/form.js'
-import { NavBar, Cell, CellGroup, Col, Row, Tag, Empty, List, Skeleton } from 'vant'
+import { NavBar, Cell, CellGroup, Col, Row, Tag, Empty, List, Skeleton, Search, DropdownMenu, DropdownItem, Calendar } from 'vant'
+import moment from 'moment'
 export default {
   name: 'formAready',
   components: {
@@ -49,18 +69,40 @@ export default {
     [Tag.name]: Tag,
     [Empty.name]: Empty,
     [List.name]: List,
-    [Skeleton.name]: Skeleton
+    [Skeleton.name]: Skeleton,
+    [Search.name]: Search,
+    [DropdownMenu.name]: DropdownMenu,
+    [DropdownItem.name]: DropdownItem,
+    [Calendar.name]: Calendar
   },
   data() {
     return {
+      searchValue: '',
       formList: [],
+      examines: [
+        { text: '全部', value: undefined },
+        { text: '已审核', value: '已审核' },
+        { text: '已驳回', value: '已驳回' },
+        { text: '未审核', value: '未审核' }
+      ],
       query: {
         currentPage: 1,
-        pageSize: 10
+        pageSize: 10,
+        templateName: undefined,
+        examine: undefined,
+        createTime: undefined
       },
       finished: false,
       loading: false,
       pageTotal: undefined
+    }
+  },
+  computed: {
+    minDate() {
+      return new Date(moment().subtract(5, 'years'))
+    },
+    maxDate() {
+      return new Date(moment().add(5, 'years'))
     }
   },
   methods: {
@@ -89,6 +131,28 @@ export default {
             this.pageTotal = 0
           }
         })
+    },
+    onSearchAlready(e) {
+      console.log(e)
+      const { query } = this
+      query.templateName = e
+      query.currentPage = 1
+      this.formList = []
+      this.queryListUserFormData()
+    },
+    onChangeExamine() {
+      const { query } = this
+      query.currentPage = 1
+      this.formList = []
+      this.queryListUserFormData()
+    },
+    onSubmitTimeConfirm(date) {
+      const { query } = this
+      query.createTime = moment(date).format('YY-MM-DD')
+      query.currentPage = 1
+      this.formList = []
+      this.queryListUserFormData()
+      this.$refs.submitTime.toggle()
     }
   },
   created() {
@@ -97,4 +161,26 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.title-wrap {
+  display: flex;
+  align-items: center;
+  .custom-title {
+    display: inline-block;
+    max-width: 150px;
+    margin-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+</style>
+<style lang="scss" scoped>
+.form-already {
+  .van-cell__title {
+    flex: 0 0 60%;
+  }
+}
+</style>

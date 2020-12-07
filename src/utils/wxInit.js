@@ -1,7 +1,7 @@
 /*
  * @Author: xiangty
  * @Date: 2020-11-29 17:32:04
- * @LastEditTime: 2020-11-29 22:50:38
+ * @LastEditTime: 2020-12-06 20:34:34
  * @LastEditors: Please set LastEditors
  * @Description: 微信config
  * @FilePath: \control-app\src\utils\wxInit.js

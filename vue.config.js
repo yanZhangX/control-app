@@ -26,7 +26,7 @@ module.exports = {
       errors: true
     },
     before: require('./mock/mock-server.js'),
-    progress: false
+    progress: true
   },
   configureWebpack: {
     name: name,

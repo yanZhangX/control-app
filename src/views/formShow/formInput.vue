@@ -1,7 +1,7 @@
 <!--
  * @Author: xiangty
  * @Date: 2020-11-03 23:02:11
- * @LastEditTime: 2020-12-05 01:19:41
+ * @LastEditTime: 2020-12-06 14:26:33
  * @LastEditors: Please set LastEditors
  * @Description: 表单展示页
  * @FilePath: \control-app\src\views\formInput\index.vue
@@ -92,14 +92,14 @@
               v-model="item.content"
               :after-read="(e, detail) => afterRead(e, detail, index)"
               :preview-full-image="false"
-              accept=".png,.jpg,.gif,.jpeg"
+              :capture="item.camera"
               @click-preview="(e, detail) => previewImg(e, detail, index)"
             />
           </template>
         </van-field>
         <van-field v-if="item.tag === 'file'" name="uploader" :label="item.title">
           <template #input>
-            <van-uploader v-model="item.content" :after-read="(e, detail) => afterFileRead(e, detail, index)" accept=".doc,.pdf,xls" />
+            <van-uploader v-model="item.content" :after-read="(e, detail) => afterFileRead(e, detail, index)" />
           </template>
         </van-field>
         <van-field v-if="item.tag === 'tooltips'" v-model="item.content" type="text" :label="item.title" :placeholder="item.tips" />
