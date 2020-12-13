@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-04 23:42:03
- * @LastEditTime: 2020-11-29 23:58:24
+ * @LastEditTime: 2020-12-10 22:50:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\views\formShow\formList.vue
@@ -50,7 +50,8 @@ export default {
   },
   methods: {
     toDetail({ templateId, hid }) {
-      this.$router.push({ path: '/formDetail', query: { templateId } })
+      const { $route } = this
+      this.$router.push({ path: '/formInput', query: { templateId, hid, path: $route.path } })
     },
     queryListUserFormData() {
       const { query } = this

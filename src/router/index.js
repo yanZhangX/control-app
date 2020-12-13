@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-11-03 22:27:01
- * @LastEditTime: 2020-11-22 17:31:27
+ * @LastEditTime: 2020-12-10 22:36:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \control-app\src\router\index.js
@@ -23,22 +23,26 @@ export const constantRoutes = [
       {
         path: 'formList',
         name: 'formList',
-        component: () => import('@/views/formShow/formList.vue')
+        component: () => import('@/views/formShow/formList.vue'),
+        meta: { title: '我的模板' }
       },
       {
         path: 'formAlready',
         name: 'formAlready',
-        component: () => import('@/views/formShow/formAlready.vue')
+        component: () => import('@/views/formShow/formAlready.vue'),
+        meta: { title: '已提交表单' }
       }
     ]
   },
   {
     path: '/formInput',
-    component: () => import('@/views/formShow/formInput.vue')
+    component: () => import('@/views/formShow/formInput.vue'),
+    meta: { title: '填写表单' }
   },
   {
     path: '/formDetail',
-    component: () => import('@/views/formShow/formDetail.vue')
+    component: () => import('@/views/formShow/formDetail.vue'),
+    meta: { title: '表单详情' }
   },
   {
     path: '/404',

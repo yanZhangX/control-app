@@ -1,7 +1,7 @@
 <!--
  * @Author: xiangty
  * @Date: 2020-11-03 23:02:11
- * @LastEditTime: 2020-12-06 14:26:33
+ * @LastEditTime: 2020-12-10 23:27:25
  * @LastEditors: Please set LastEditors
  * @Description: 表单展示页
  * @FilePath: \control-app\src\views\formInput\index.vue
@@ -48,9 +48,12 @@
           :placeholder="item.tips"
           @click="showGroupPicker = true"
         />
-        <van-popup v-if="item.tag === 'radio-group'" closeable close-icon="close" :style="{ height: '30%' }" v-model="showGroupPicker" get-container="#RadioGroup" position="bottom">
+        <van-popup v-if="item.tag === 'radio-group'" close-icon="close" :style="{ height: '30%' }" v-model="showGroupPicker" get-container="#RadioGroup" position="bottom">
           <div class="group-container">
-            <div class="group-header"></div>
+            <div class="group-header">
+              <button class="van-picker__cancel" @click="hideGroupPicker(true)">取消</button>
+              <button class="van-picker__confirm" @click="hideGroupPicker">确定</button>
+            </div>
             <van-checkbox-group v-model="item.content">
               <van-cell-group>
                 <van-cell v-for="(cell, cindex) in item.options" clickable :key="cindex" :title="cell" @click="toggleRadioGroup(cindex)">
@@ -115,7 +118,7 @@
         </van-popup>
       </div>
       <div style="margin: 16px;">
-        <van-button round block type="info" native-type="submit">
+        <van-button round block type="info" :loading="submitLoading" native-type="submit">
           提交
         </van-button>
       </div>
@@ -167,6 +170,7 @@ export default {
       showCalendar: false,
       showRangeCalendar: false,
       showArea: false,
+      submitLoading: false,
       areaList // 数据格式见 Area 组件文档
     }
   },
@@ -184,7 +188,7 @@ export default {
     this.templateId = templateId
     this.templateHid = hid
     this.fromPath = path
-    if (path === '/formDetail') {
+    if (path === '/formShow/formList') {
       this.queryTemplate()
     } else {
       this.queryUserFromData()
@@ -321,7 +325,10 @@ export default {
       this.$router.go(-1)
     },
     onSubmit(values) {
-      const { detailList, templateId, templateHid, fromPath } = this
+      console.log('aafas')
+      const { detailList, templateId, templateHid, fromPath, submitLoading } = this
+      if (submitLoading) return
+      this.submitLoading = true
       const complate = detailList.some((item) => {
         return item.required === 1 && item.content
       })
@@ -330,6 +337,7 @@ export default {
           type: 'fail',
           message: '你有未填写的项目'
         })
+        this.submitLoading = false
         return
       }
       const params = {
@@ -337,29 +345,44 @@ export default {
         data: detailList
       }
       if (fromPath === '/formDetail') {
-        saveForm(params).then((res) => {
-          if (res.code === 200) {
-            this.$router.push({ path: `/formShow/formAlready` })
-          } else {
-            Toast.loading({
-              type: 'fail',
-              message: res.message
-            })
-          }
-        })
+        saveForm(params)
+          .then((res) => {
+            if (res.code === 200) {
+              this.$router.push({ path: `/formShow/formAlready` })
+            } else {
+              Toast.loading({
+                type: 'fail',
+                message: res.message
+              })
+            }
+          })
+          .finally(() => {
+            this.submitLoading = false
+          })
       } else {
         params.hId = templateHid
-        updateUserFromData(params).then((res) => {
-          if (res.code === 200) {
-            this.$router.push({ path: `/formShow/formAlready` })
-          } else {
-            Toast.loading({
-              type: 'fail',
-              message: res.message
-            })
-          }
-        })
+        updateUserFromData(params)
+          .then((res) => {
+            if (res.code === 200) {
+              this.$router.push({ path: `/formShow/formAlready` })
+            } else {
+              Toast.loading({
+                type: 'fail',
+                message: res.message
+              })
+            }
+          })
+          .finally(() => {
+            this.submitLoading = false
+          })
       }
+    },
+    hideGroupPicker(clear = false, index) {
+      if (clear) {
+        const { detailList } = this
+        detailList[index].content = []
+      }
+      this.showGroupPicker = false
     }
   }
 }

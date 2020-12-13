@@ -1,7 +1,7 @@
 /*
  * @Author: xiangty
  * @Date: 2020-11-03 22:27:02
- * @LastEditTime: 2020-11-30 00:03:31
+ * @LastEditTime: 2020-12-10 23:23:47
  * @LastEditors: Please set LastEditors
  * @Description: http request
  * @FilePath: \control-app\src\utils\request.js
@@ -60,7 +60,7 @@ service.interceptors.response.use(
           message: '服务端错误'
         })
       }
-      return Promise.reject(response.data.code || 'Error')
+      return Promise.reject(res.msg || 'Error')
     } else {
       return res
     }
@@ -71,7 +71,7 @@ service.interceptors.response.use(
       type: 'fail',
       message: error.message
     })
-    return Promise.reject(error)
+    return Promise.reject(new Error('progress'))
   }
 )
 
