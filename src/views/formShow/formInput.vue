@@ -11,14 +11,25 @@
     <van-nav-bar :title="templateName" left-text="返回" left-arrow fixed @click-left="onClickLeft" />
     <van-form @submit="onSubmit">
       <div v-for="(item, index) in detailList" :key="index">
-        <van-field v-if="item.tag === 'input'" v-model="item.content" :name="item.name" :label="item.title" :placeholder="item.tips" />
-        <van-field v-if="item.tag === 'textarea'" v-model="item.content" rows="2" autosize label="留言" type="textarea" :maxlength="item.characterLimit" :placeholder="item.tips" show-word-limit />
-        <van-field v-if="item.tag === 'input-number'" :label="item.title" class="custom-input">
+        <van-field v-if="item.tag === 'input'" :required="!!item.required" v-model="item.content" :name="item.name" :label="item.title" :placeholder="item.tips" />
+        <van-field
+          v-if="item.tag === 'textarea'"
+          :required="!!item.required"
+          v-model="item.content"
+          rows="2"
+          autosize
+          label="留言"
+          type="textarea"
+          :maxlength="item.characterLimit"
+          :placeholder="item.tips"
+          show-word-limit
+        />
+        <van-field v-if="item.tag === 'input-number'" :required="!!item.required" :label="item.title" class="custom-input">
           <template #input>
             <van-stepper v-model="item.content" />
           </template>
         </van-field>
-        <van-field v-if="item.tag === 'select'" :label="item.title" class="custom-select">
+        <van-field v-if="item.tag === 'select'" :required="!!item.required" :label="item.title" class="custom-select">
           <template #input>
             <multiselect v-model="item.content" :options="item.options" :placeholder="item.tips" :searchable="false" :show-labels="false"> </multiselect>
           </template>
@@ -29,6 +40,7 @@
           readonly
           clickable
           name="picker"
+          :required="!!item.required"
           :value="item.content"
           :label="item.title"
           :placeholder="item.tips"
@@ -43,6 +55,7 @@
           readonly
           clickable
           name="picker"
+          :required="!!item.required"
           :label="item.title"
           :value="radioGroupValue(item.content)"
           :placeholder="item.tips"
@@ -51,8 +64,8 @@
         <van-popup v-if="item.tag === 'radio-group'" close-icon="close" :style="{ height: '30%' }" v-model="showGroupPicker" get-container="#RadioGroup" position="bottom">
           <div class="group-container">
             <div class="group-header">
-              <button class="van-picker__cancel" @click="hideGroupPicker(true)">取消</button>
-              <button class="van-picker__confirm" @click="hideGroupPicker">确定</button>
+              <a class="van-picker__cancel pick-btn" @click="hideGroupPicker(true, index)">取消</a>
+              <a class="van-picker__confirm pick-btn" @click="hideGroupPicker()">确定</a>
             </div>
             <van-checkbox-group v-model="item.content">
               <van-cell-group>
@@ -84,11 +97,31 @@
             </van-checkbox-group>
           </template>
         </van-field> -->
-        <van-field v-if="item.tag === 'date'" readonly clickable name="calendar" :value="item.content" label="日历" :placeholder="item.tips" @click="showCalendar = true" />
+        <van-field
+          v-if="item.tag === 'date'"
+          readonly
+          clickable
+          name="calendar"
+          :required="!!item.required"
+          :value="item.content"
+          :label="item.title"
+          :placeholder="item.tips"
+          @click="showCalendar = true"
+        />
         <van-calendar v-if="item.tag === 'date'" v-model="showCalendar" @confirm="(e) => onDateConfirm(e, index)" />
-        <van-field v-if="item.tag === 'range-date'" readonly clickable name="calendar" :value="item.content" label="日历" :placeholder="item.tips" @click="showRangeCalendar = true" />
+        <van-field
+          v-if="item.tag === 'range-date'"
+          readonly
+          clickable
+          name="calendar"
+          :required="!!item.required"
+          :value="item.content"
+          :label="item.title"
+          :placeholder="item.tips"
+          @click="showRangeCalendar = true"
+        />
         <van-calendar v-if="item.tag === 'range-date'" v-model="showRangeCalendar" @confirm="(e) => onRangeConfirm(e, index)" />
-        <van-field v-if="item.tag === 'pic'" name="uploader" :label="item.title">
+        <van-field v-if="item.tag === 'pic'" :required="!!item.required" name="uploader" :label="item.title">
           <template #input>
             <van-uploader
               multiple
@@ -100,15 +133,15 @@
             />
           </template>
         </van-field>
-        <van-field v-if="item.tag === 'file'" name="uploader" :label="item.title">
+        <van-field v-if="item.tag === 'file'" name="uploader" :required="!!item.required" :label="item.title">
           <template #input>
             <van-uploader v-model="item.content" :after-read="(e, detail) => afterFileRead(e, detail, index)" />
           </template>
         </van-field>
-        <van-field v-if="item.tag === 'tooltips'" v-model="item.content" type="text" :label="item.title" :placeholder="item.tips" />
-        <van-field v-if="item.tag === 'address'" readonly clickable :value="item.content" :label="item.title" :placeholder="item.tips" @click="showArea = true" />
-        <van-cell v-if="item.tag === 'location'" :title="item.title" :label="item.content" />
-        <van-field v-if="item.tag === 'data-select'" :label="item.title" class="custom-select">
+        <van-field v-if="item.tag === 'tooltips'" v-model="item.content" type="text" :required="!!item.required" :label="item.title" :placeholder="item.tips" />
+        <van-field v-if="item.tag === 'address'" readonly clickable :required="!!item.required" :value="item.content" :label="item.title" :placeholder="item.tips" @click="showArea = true" />
+        <van-cell v-if="item.tag === 'location'" :title="item.title" :label="item.content" :required="!!item.required" />
+        <van-field v-if="item.tag === 'data-select'" :required="!!item.required" :label="item.title" class="custom-select">
           <template #input>
             <multiselect v-model="item.content" :options="item.options" :placeholder="item.tips" :searchable="false" :show-labels="false"> </multiselect>
           </template>
@@ -130,12 +163,10 @@
 <script>
 import { NavBar, Form, Button, Field, CellGroup, Cell, Stepper, RadioGroup, Radio, CheckboxGroup, Checkbox, Calendar, Uploader, Popup, Area, Toast, Picker, ImagePreview } from 'vant'
 import Multiselect from 'vue-multiselect'
-import { splitArrObj } from '@/utils/index.js'
-import { fileUpload, saveForm, getUserFromData, getTemplate, updateUserFromData } from '@/api/form'
+import { splitArrObj, aMapLocation } from '@/utils/index.js'
+import { fileUpload, getUserFromData, getTemplate, saveForm, updateUserFromData } from '@/api/form'
 import areaList from '@/assets/json/area.js'
-import { getLocation } from '@/utils/wxInit.js'
 import aMap from '@/utils/aMap.js'
-let geocoder
 export default {
   name: 'formDetail',
   components: {
@@ -178,6 +209,9 @@ export default {
     radioGroupValue() {
       return function(value) {
         if (value) {
+          if (typeof value === 'string') {
+            value = JSON.parse(value)
+          }
           return value.join(',')
         }
       }
@@ -195,29 +229,17 @@ export default {
     }
   },
   methods: {
-    queryAddress(lnglat) {
-      aMap.init().then((AMap) => {
-        this.amap = new window.AMap.Map('container', {
-          resizeEnable: true
-        })
-        AMap.plugin('AMap.Geocoder', () => {
-          geocoder = new AMap.Geocoder({
-            city: '010', // 城市设为北京，默认：“全国”
-            radius: 1000 // 范围，默认：500
+    queryAddress() {
+      aMap.init().then(() => {
+        this.setAddress('定位中...')
+        aMapLocation()
+          .then((res) => {
+            this.setAddress(res.formattedAddress)
           })
-          geocoder.getAddress(lnglat, (status, result) => {
-            if (status === 'complete' && result.info === 'OK') {
-              const { formattedAddress } = result.regeocode
-              // result为对应的地理位置详细信息
-              console.log(formattedAddress)
-              this.setAddress(formattedAddress)
-            } else {
-              Toast({
-                message: '根据经纬度查询地址失败'
-              })
-            }
+          .catch((error) => {
+            console.log(error)
+            this.setAddress('定位失败')
           })
-        })
       })
     },
     queryTemplate() {
@@ -226,13 +248,11 @@ export default {
         const { templateName, templateDetailList } = res.data
         this.templateName = templateName
         this.detailList = templateDetailList
-        getLocation()
-          .then((res) => {
-            this.queryAddress(res)
-          })
-          .catch(() => {
-            this.setAddress('定位失败')
-          })
+        try {
+          this.queryAddress()
+        } catch (e) {
+          console.log(e)
+        }
       })
     },
     queryUserFromData() {
@@ -246,6 +266,7 @@ export default {
           }
           return item
         })
+        this.queryAddress()
       })
     },
     /**
@@ -253,7 +274,6 @@ export default {
      */
     setAddress(addr) {
       this.detailList = this.detailList.map((item) => {
-        console.log(item.tag === 'location')
         if (item.tag === 'location') {
           item.content = addr
         }
@@ -325,20 +345,18 @@ export default {
       this.$router.go(-1)
     },
     onSubmit(values) {
-      console.log('aafas')
       const { detailList, templateId, templateHid, fromPath, submitLoading } = this
       if (submitLoading) return
       this.submitLoading = true
       const complate = detailList.some((item) => {
-        return item.required === 1 && item.content
+        return item.required === 1 && !item.content
       })
-      if (!complate) {
+      if (complate) {
         Toast.loading({
           type: 'fail',
-          message: '你有未填写的项目'
+          message: '你有未填写的必填项目'
         })
         this.submitLoading = false
-        return
       }
       const params = {
         templateId,
@@ -412,7 +430,10 @@ export default {
     .group-header {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
+      .pick-btn {
+        padding: 10px;
+      }
     }
     .van-checkbox-group {
       height: calc(100% - 44px);
