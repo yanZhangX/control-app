@@ -1,8 +1,4 @@
 /**
- * Created by PanJiaChen on 16/11/18.
- */
-
-/**
  * Parse the time to string
  * @param {(Object|string|number)} time
  * @param {string} cFormat
@@ -362,4 +358,35 @@ export const fileByBase64 = (file, callback) => {
   reader.onload = function(e) {
     callback(e.target.result)
   }
+}
+/**
+ * @description 高德地图定位
+ */
+export function aMapLocation() {
+  /* eslint-disable */
+  return new Promise((resolve, reject) => {
+    var map, geolocation
+    map = new AMap.Map('container', {
+      resizeEnable: true
+    })
+    map.plugin('AMap.Geolocation', function() {
+      geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true, // 是否使用高精度定位，默认:true
+        convert: true, // 自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+        timeout: 1000, // 超过10秒后停止定位，默认：无穷大
+        buttonPosition: 'RB'
+      })
+      geolocation.getCurrentPosition(function(status, result) {
+        console.log(status, result)
+      })
+      AMap.event.addListener(geolocation, 'complete', function(data) {
+        resolve(data)
+      }) // 返回定位信息
+      AMap.event.addListener(geolocation, 'error', function(error) {
+        console.log(error)
+        reject(new Error(error))
+      }) // 返回定位出错信息
+    })
+  })
+  /* eslint-enable */
 }
