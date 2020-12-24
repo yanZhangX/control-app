@@ -8,10 +8,11 @@
  */
 import wx from 'weixin-js-sdk'
 import { getJsapiSignature } from '@/api/form.js'
+const httpUrl = window.location.href.split('#')[0]
 
 export function wxConfig() {
-  //   const params = { url: httpUrl }
-  getJsapiSignature().then((res) => {
+  const params = { url: httpUrl }
+  getJsapiSignature(params).then((res) => {
     const res_conf = res.data
     wx.config({
       debug: false,
