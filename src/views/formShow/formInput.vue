@@ -141,7 +141,9 @@
         </van-popup>
       </div>
       <div style="margin: 16px">
-        <van-button round block type="info" :loading="submitLoading" native-type="submit"> 提交 </van-button>
+        <div @click="showToast">
+          <van-button round block type="info" :loading="submitLoading" native-type="submit" :disabled="moidfyBoolean">提交</van-button>
+        </div>
       </div>
     </van-form>
     <div id="container"></div>
@@ -194,10 +196,15 @@ export default {
       showRangeCalendar: false,
       showArea: false,
       submitLoading: false,
+      moidfy: 1, // 可编辑状态
       areaList // 数据格式见 Area 组件文档
     }
   },
   computed: {
+    moidfyBoolean() {
+      const { moidfy } = this
+      return moidfy !== 1
+    },
     radioGroupValue() {
       return function(value) {
         if (value) {
@@ -277,7 +284,8 @@ export default {
     queryTemplate() {
       const { templateId } = this
       getTemplate({ templateId }).then((res) => {
-        const { templateName, templateDetailList } = res.data
+        const { templateName, templateDetailList, moidfy } = res.data
+        this.moidfy = moidfy
         this.templateName = templateName
         this.detailList = templateDetailList
         // try {
@@ -302,8 +310,9 @@ export default {
     queryUserFromData() {
       const { templateId, templateHid } = this
       getUserFromData({ templateId, hid: templateHid }).then((res) => {
-        const { templateName, detailList } = res.data
+        const { templateName, detailList, moidfy } = res.data
         this.templateName = templateName
+        this.moidfy = moidfy
         this.detailList = splitArrObj(detailList, 'data').map((item) => {
           if ((item.tag === 'fileUpload' || item.tag === 'pic' || item.tag === 'radio-group' || item.tag === 'range-date') && !item.content) {
             item.content = []
@@ -452,6 +461,14 @@ export default {
         detailList[index].content = []
       }
       this.showGroupPicker = false
+    },
+    showToast() {
+      const { moidfyBoolean } = this
+      if (moidfyBoolean) {
+        Toast({
+          message: '该项目暂时不可编辑'
+        })
+      }
     }
   }
 }
@@ -459,6 +476,7 @@ export default {
 
 <style lang="scss">
 .form-input[formInput] {
+  padding-bottom: 20px;
   .van-form {
     padding-top: 50px;
   }

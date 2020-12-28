@@ -7,24 +7,27 @@
  * @FilePath: \control-app\src\views\formShow\formAready.vue
 -->
 <template>
-  <div class="form-already">
+  <div class="form-already" formAlready>
     <van-nav-bar title="已填写列表" fixed />
     <div class="main-body">
       <van-search v-model="searchValue" show-action label="标题" placeholder="请输入搜索关键词" @search="onSearchAlready">
         <template #action>
-          <div @click="onSearchAlready">搜索</div>
+          <van-button :color="themeColor" size="mini" @click="onSearchAlready(searchValue)">搜索</van-button>
         </template>
       </van-search>
-      <van-dropdown-menu>
+      <van-dropdown-menu :active-color="themeColor">
         <van-dropdown-item v-model="query.examine" :options="examines" @change="onChangeExamine" />
         <van-dropdown-item :title="query.createTime ? query.createTime : '请选择日期'" ref="submitTime">
-          <van-calendar :min-date="minDate" :max-date="maxDate" :show-title="false" :poppable="false" :style="{ height: '400px' }" @confirm="onSubmitTimeConfirm" />
+          <van-calendar :color="themeColor" :min-date="minDate" :max-date="maxDate" :show-title="false" :poppable="false" :style="{ height: '400px' }" @confirm="onSubmitTimeConfirm" />
+          <div class="option-btns">
+            <van-button block round @click="resetDate">重置</van-button>
+          </div>
         </van-dropdown-item>
       </van-dropdown-menu>
       <van-skeleton :row="20" :loading="loading" />
       <van-list v-if="formList.length > 0" v-model="loading" :finished="finished" finished-text="没有更多了" @load="queryListUserFormData">
         <template v-for="(item, index) in formList">
-          <van-cell :value="item.createTime" is-link @click.native="toDetail(item.templateId, item.hid)" :key="index">
+          <van-cell :value="item.createTime" is-link @click.native="toDetail(item)" :key="index">
             <template #title>
               <div class="title-wrap">
                 <span class="custom-title">{{ item.templateName }}</span>
@@ -56,7 +59,7 @@
 
 <script>
 import { formListAready } from '@/api/form.js'
-import { NavBar, Cell, CellGroup, Col, Row, Tag, Empty, List, Skeleton, Search, DropdownMenu, DropdownItem, Calendar } from 'vant'
+import { NavBar, Cell, CellGroup, Col, Row, Tag, Empty, List, Skeleton, Search, DropdownMenu, DropdownItem, Calendar, Button } from 'vant'
 import moment from 'moment'
 export default {
   name: 'formAready',
@@ -73,11 +76,13 @@ export default {
     [Search.name]: Search,
     [DropdownMenu.name]: DropdownMenu,
     [DropdownItem.name]: DropdownItem,
-    [Calendar.name]: Calendar
+    [Calendar.name]: Calendar,
+    [Button.name]: Button
   },
   data() {
     return {
       searchValue: '',
+      themeColor: '#1989fa',
       formList: [],
       examines: [
         { text: '全部', value: undefined },
@@ -106,7 +111,13 @@ export default {
     }
   },
   methods: {
-    toDetail(templateId, hid) {
+    toDetail({ templateId, hid, moidfy }) {
+      // if (!moidfy) {
+      //   Toast({
+      //     message: '该表单不可编辑'
+      //   })
+      //   return
+      // }
       const { path } = this.$route
       this.$router.push({ path: '/formInput', query: { templateId, hid, path } })
     },
@@ -132,13 +143,24 @@ export default {
           }
         })
     },
+    /**
+     * @description 搜索模板名称
+     */
     onSearchAlready(e) {
-      console.log(e)
       const { query } = this
       query.templateName = e
       query.currentPage = 1
       this.formList = []
       this.queryListUserFormData()
+    },
+    /**
+     * @description 充值搜索条件
+     */
+    resetDate() {
+      this.query.createTime = undefined
+      this.formList = []
+      this.queryListUserFormData()
+      this.$refs.submitTime.toggle()
     },
     onChangeExamine() {
       const { query } = this
@@ -162,25 +184,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title-wrap {
-  display: flex;
-  align-items: center;
-  .custom-title {
-    display: inline-block;
-    max-width: 150px;
-    margin-right: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 14px;
-    font-weight: bold;
+.form-already {
+  .option-btns {
+    padding: 0 16px 24px;
+  }
+  .van-cell__title {
+    flex: 0 0 60%;
+  }
+  .title-wrap {
+    display: flex;
+    align-items: center;
+    .custom-title {
+      display: inline-block;
+      max-width: 150px;
+      margin-right: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: bold;
+    }
   }
 }
 </style>
-<style lang="scss" scoped>
-.form-already {
-  .van-cell__title {
-    flex: 0 0 60%;
+<style lang="scss">
+.form-already[formAlready] {
+  .van-dropdown-item__content {
+    max-height: 100%;
   }
 }
 </style>
